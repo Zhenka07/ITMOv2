@@ -34,17 +34,18 @@ flowchart LR
 
 ## Разница
 
-| Что меняется | AS IS | TO BE | Как проверим изменение |
-|---|---|---|---|
-| Валидация тела | dict, KeyError и 500 | Pydantic-модель, 422 | Отправить `{}` → 422 |
-| Длина diff | Не ограничено | 413 при >20000 | Отправить длинный diff → 413 |
-| Секреты в prompt | Сырые данные | sanitize → [REDACTED] | Передать `token=abc`; проверить prompt |
-| Ошибки LLM | 500 без обработки | Контролируемый ответ | Мок LLM timeout → контролируемая ошибка |
-| Формат ответа | {comment} | {summary, risks<=3, checks} | Контракт OUT-1 |
+| Что меняется | AS IS | TO BE | Как проверим изменение | Evidence |
+|---|---|---|---|---|
+| Валидация тела | `payload: dict`, `KeyError` → 500 | Pydantic-модель `ReviewRequest`, 422 | Отправить `{}` → HTTP 422 | `context.md` |
+| Длина diff | Не ограничено (риск DoS/переполнения) | Отклонение при >20000 симв. → HTTP 413 | Отправить diff длиной 20001 симв. → HTTP 413 | `CASE.md` API-1 |
+| Секреты в prompt | Сырые данные передаются в LLM | `sanitize(diff)` → `[REDACTED]` | Передать diff с `token=...`, проверить prompt к LLM | `CASE.md` SEC-1 |
+| Ошибки LLM | Необработанное исключение → HTTP 500 | Таймаут 10с, контролируемый ответ HTTP 502/504 | Мок `llm.generate` с `TimeoutError` → HTTP 504 | `CASE.md` REL-1 |
+| Формат ответа | Произвольный `{"comment": answer}` | Контракт `{summary, risks<=3, checks}` | Проверка схемы JSON-ответа | `CASE.md` OUT-1 |
+| Наблюдаемость (логи) | Сырой ввод/стектрейс в консоли | Логируются только `request_id`, длительность, статус | Проверка логов: отсутствие diff и токенов в stdout | `CASE.md` OBS-1 |
 
 ## Как использовали AI
 
-- Для чего: Сводка AS IS/TO BE и фиксация различий на основе TRAINING_PR.diff и CASE.md.
-- Тип промпта: master prompt.
-- Строка в [`prompts.md`](prompts.md): P1-02.
-- Что проверили и исправили сами: Сопоставили шаги TO BE с правилами SEC-1, API-1, REL-1, OUT-1, OBS-1; проверили воспроизводимость проверок.
+- Для чего: Сводка AS IS/TO BE, устранение противоречий и верификация через CoV (Chain of Verification).
+- Тип промпта: chain of verification (в рамках Практики 2) / master prompt (в Практике 1).
+- Строка в [`prompts.md`](prompts.md): P1-02 (первичная версия); Практика 2: [`chain_of_verification/experiment.md`](../practice_02/chain_of_verification/experiment.md).
+- Что проверили и исправили сами: Сопоставили шаги TO BE с правилами SEC-1, API-1, REL-1, OUT-1, OBS-1; исключили предположение о допустимости логирования начала diff (отклонено по OBS-1).
