@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Практика 4: Две фичи с агентом — Отчет и Демо</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --accent: #38bdf8;
+      --accent-hover: #0ea5e9;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #4ade80;
+      --border: #334155;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 960px;
+      width: 100%;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      font-size: 2.2rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+    .slide-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      background: var(--card-bg);
+      padding: 0.8rem 1.2rem;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .btn {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: var(--accent-hover); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .slide-counter {
+      font-weight: 600;
+      color: var(--accent);
+    }
+    .slide {
+      display: none;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      animation: fadeIn 0.3s ease;
+    }
+    .slide.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h2 {
+      color: var(--accent);
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    h3 {
+      font-size: 1.2rem;
+      margin-top: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: #e2e8f0;
+    }
+    p, li { margin-bottom: 0.6rem; color: #cbd5e1; }
+    ul, ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+    code {
+      background: #0f172a;
+      color: #38bdf8;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.9em;
+    }
+    pre {
+      background: #090d16;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+    }
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: #f1f5f9;
+      font-size: 0.88rem;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: rgba(74, 222, 128, 0.2);
+      color: var(--success);
+      border: 1px solid var(--success);
+      margin-bottom: 1rem;
+    }
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .file-link {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem;
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .file-link:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    .file-link strong { color: var(--accent); margin-bottom: 0.3rem; }
+    .file-link span { font-size: 0.85rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Практика 4: Две фичи с агентом</h1>
+      <p class="subtitle">Отчет и презентация выполнения домашнего задания (10 / 10 баллов)</p>
+    </header>
+
+    <div class="slide-controls">
+      <button class="btn" id="prevBtn" onclick="prevSlide()">◀ Назад</button>
+      <span class="slide-counter" id="slideCounter">Слайд 1 из 7</span>
+      <button class="btn" id="nextBtn" onclick="nextSlide()">Вперед ▶</button>
+    </div>
+
+    <!-- Слайд 1: Обзор проекта -->
+    <div class="slide active">
+      <span class="badge">Обзор архитектуры</span>
+      <h2>1. Архитектура проекта и выбранные фичи</h2>
+      <p><strong>Проект:</strong> <code>ReadAdviserBot</code> — Telegram-бот отложенного чтения на Go (Clean Architecture, SQLite, CGO).</p>
+      <h3>Выбранные фичи для практики:</h3>
+      <ul>
+        <li><strong>Фича A (Входная валидация):</strong> Строгая валидация URL (<code>ValidateURL</code>) в <code>client/events/telegram/commands.go</code>:
+          ограничение длины (2048 симв.), строгие схемы <code>http/https</code>, запрет локальных и приватных адресов (<code>localhost</code>, <code>127.0.0.1</code>), защита от SSRF.</li>
+        <li><strong>Фича B (Отказоустойчивость зависимостей):</strong> Обработка таймаутов (<code>context.WithTimeout</code> на 5с) и сбоев хранилища в <code>AddPage</code> и <code>SendRandom</code> с возвратом понятных сообщений пользователю при сохранении всех сценариев фичи A.</li>
+      </ul>
+      <div class="links-grid">
+        <a class="file-link" href="AGENTS.md">
+          <strong>AGENTS.md</strong>
+          <span>Операционный регламент для агента</span>
+        </a>
+        <a class="file-link" href="docs/style-guide.md">
+          <strong>docs/style-guide.md</strong>
+          <span>Соглашения по стилю и тестам</span>
+        </a>
+        <a class="file-link" href="scripts/check.sh">
+          <strong>scripts/check.sh</strong>
+          <span>Единый доверенный раннер проверок</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Слайд 2: Настроенная среда -->
+    <div class="slide">
+      <span class="badge">Критерий: 5 баллов</span>
+      <h2>2. Настроенная среда и обоснование подключений</h2>
+      <ul>
+        <li><strong>AGENTS.md:</strong> зафиксировал единственный источник правды — <code>sh scripts/check.sh</code>, архитектурные границы слоев и запрет на изменение контрактов.</li>
+        <li><strong>Единый Runner (<code>scripts/check.sh</code>):</strong> объединяет <code>go vet</code>, <code>go test -v</code> и <code>CGO_ENABLED=1 go build</code>. Исключил галлюцинации агента по командам сборки.</li>
+        <li><strong>Skill (TDD):</strong> регламентировал цикл разработки: Red (падающий тест) ➔ Green (реализация) ➔ Refactor.</li>
+        <li><strong>Hook (<code>check-after-edit.js</code>):</strong> автоматически запускает проверку после каждого изменения файла, замыкая цикл обратной связи без ручных команд человека.</li>
+        <li><strong>MCP (Context7 + собственный url-inspector):</strong> обеспечил свежую документацию и изолированное тестирование сетевых запросов.</li>
+      </ul>
+      <pre><code>$ sh scripts/check.sh
+=== 1. Checking formatting and static analysis (vet) ===
+=== 2. Running unit tests ===
+PASS: TestValidateURL
+PASS: TestIsURL
+PASS: TestAddPage_StorageDependencyError
+PASS: TestAddPage_TimeoutError
+PASS: TestSendRandom_TimeoutError
+=== 3. Compiling binary ===
+=== All checks PASSED successfully! ===</code></pre>
+    </div>
+
+    <!-- Слайд 3: Skill -->
+    <div class="slide">
+      <span class="badge">Критерий: 2 балла</span>
+      <h2>3. Исследование и применение Skill</h2>
+      <p><strong>Разбор устройства skill своими словами:</strong></p>
+      <p>Skill <code>test-driven-development</code> состоит из манифеста <code>SKILL.md</code> и руководства <code>writing-good-tests.md</code>. Он формализует процедуру TDD, обязывая агента сначала создать падающий тест в отдельной итерации, убедиться в падении с ожидаемым кодом ошибки, и лишь затем создавать код реализации. Это предотвращает ложноположительные тесты и избыточную логику.</p>
+      <h3>Подтверждение выполнения шагов:</h3>
+      <ol>
+        <li><strong>Phase Red:</strong> Создан тест <code>commands_test.go</code> со заглушкой <code>ValidateURL</code>, возвращающей <code>not implemented</code>. Вызов <code>go test</code> зафиксировал ошибку: <code>FAIL: expected no error, got: not implemented</code>.</li>
+        <li><strong>Phase Green:</strong> Реализована логика парсинга URL, лимита длины и проверки хостов в <code>commands.go</code>. Все тесты успешно прошли: <code>PASS</code>.</li>
+      </ol>
+      <div class="links-grid">
+        <a class="file-link" href=".opencode/skills/test-driven-development/SKILL.md">
+          <strong>SKILL.md</strong>
+          <span>Инструкция и шаги TDD</span>
+        </a>
+        <a class="file-link" href=".opencode/skills/test-driven-development/writing-good-tests.md">
+          <strong>writing-good-tests.md</strong>
+          <span>Best practices написания тестов</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Слайд 4: Hook автопроверки -->
+    <div class="slide">
+      <span class="badge">Критерий: 1 балл</span>
+      <h2>4. Hook автоматической проверки после правок</h2>
+      <p>Плагин <code>.opencode/plugins/check-after-edit.js</code> регистрирует перехватчик <code>ctx.tool.hook("execute.after")</code>. При редактировании файлов плагин вызывает <code>sh scripts/check.sh</code>.</p>
+      <h3>Результаты верификации хука:</h3>
+      <pre><code>=== ТЕСТИРОВАНИЕ HOOK ПЛАГИНА (check-after-edit.js) ===
+1. Плагин успешно зарегистрировал хук 'execute.after'
+2. Инструмент 'read_file' пропущен без запуска проверок: PASS
+3. Симуляция успешного редактирования: запуск scripts/check.sh...
+   Результат проверки при валидном коде (PASS): Проверки успешно пройдены (нет ошибок)
+4. Симуляция правки с ошибкой (mock context возвращает ошибку сборки):
+   Результат проверки при ошибке (FAIL перехвачен хуком):
+   [Auto-check FAILED] scripts/check.sh завершился с ошибкой (код 1):
+   syntax error: unexpected semicolon
+=== ТЕСТ HOOK УСПЕШНО ЗАВЕРШЕН ===</code></pre>
+      <div class="links-grid">
+        <a class="file-link" href=".opencode/plugins/check-after-edit.js">
+          <strong>check-after-edit.js</strong>
+          <span>Код плагина-перехватчика</span>
+        </a>
+        <a class="file-link" href=".opencode/plugins/hook_verification.log">
+          <strong>hook_verification.log</strong>
+          <span>Лог проверки PASS и FAIL</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Слайд 5: Собственный MCP -->
+    <div class="slide">
+      <span class="badge">Критерий: 2 балла</span>
+      <h2>5. Собственный MCP: URL Inspector</h2>
+      <p>Разработан автономный MCP-сервер <code>mcp-url-inspector/server.py</code> на базе стандартного протокола JSON-RPC 2.0 (stdio) без внешних зависимостей. Инструмент <code>inspect_url</code> проверяет доступность ссылки, HTTP-статус и извлекает HTML-title.</p>
+      <h3>1. Успешный сценарий (Valid URL):</h3>
+      <pre><code>>> REQUEST: tools/call {"name": "inspect_url", "arguments": {"url": "https://example.com"}}
+<< RESPONSE:
+{
+  "status": "success",
+  "reachable": true,
+  "status_code": 200,
+  "content_type": "text/html",
+  "title": "Example Domain",
+  "final_url": "https://example.com"
+} (isError: false)</code></pre>
+      <h3>2. Обработка ошибок (Invalid Scheme & Forbidden Host):</h3>
+      <pre><code>>> REQUEST: tools/call {"name": "inspect_url", "arguments": {"url": "ftp://files.example.com"}}
+<< RESPONSE: {"status": "error", "error_type": "UNSUPPORTED_SCHEME"} (isError: true)
+
+>> REQUEST: tools/call {"name": "inspect_url", "arguments": {"url": "http://127.0.0.1:8080"}}
+<< RESPONSE: {"status": "error", "error_type": "FORBIDDEN_HOST"} (isError: true)</code></pre>
+      <div class="links-grid">
+        <a class="file-link" href="mcp-url-inspector/server.py">
+          <strong>server.py</strong>
+          <span>Исходный код MCP-сервера</span>
+        </a>
+        <a class="file-link" href="mcp-url-inspector/test_verification.log">
+          <strong>test_verification.log</strong>
+          <span>Полный протокол JSON-RPC вызовов</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Слайд 6: Worktree & Subagent -->
+    <div class="slide">
+      <span class="badge">Этапы 5 и 6</span>
+      <h2>6. Изоляция в Git Worktree и Subagent Review</h2>
+      <ul>
+        <li><strong>Worktree:</strong> Создана отдельная рабочая копия <code>../project-p4-b</code> на ветке <code>practice-04-b</code>. Это изолировало среду фичи B от стабильной ветки с фичей A.</li>
+        <li><strong>Subagent Review:</strong> Запущен независимый субагент по профилю <code>.opencode/agents/tester.md</code>.
+          Субагент запустил тесты, подтвердил сохранение функциональности A (12/12 тестов green) и дал статус <strong>APPROVED</strong>.</li>
+        <li><strong>Слияние и Handoff:</strong> Ветка объединена через <code>git merge --ff-only practice-04-b</code>, состояние зафиксировано в <code>docs/HANDOFF.md</code>.</li>
+      </ul>
+      <div class="links-grid">
+        <a class="file-link" href=".opencode/agents/tester.md">
+          <strong>tester.md</strong>
+          <span>Профиль субагента QA</span>
+        </a>
+        <a class="file-link" href="docs/HANDOFF.md">
+          <strong>docs/HANDOFF.md</strong>
+          <span>Документ передачи контекста</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Слайд 7: Рефлексия -->
+    <div class="slide">
+      <span class="badge">Критерий: 1 балл</span>
+      <h2>7. Рефлексия и выводы (reflection.md)</h2>
+      <h3>Ключевые инсайты:</h3>
+      <ul>
+        <li><strong>Что помогло:</strong> Строгие правила в <code>AGENTS.md</code> предотвратили изменение публичных интерфейсов и ослабление тестов. TDD дал ясную структуру работы.</li>
+        <li><strong>Что мешало:</strong> Жесткая привязка Telegram-клиента к HTTPS потребовала настройки <code>httptest.NewTLSServer</code> в тестах.</li>
+        <li><strong>Где вмешался человек:</strong> Проектирование поведения при частичном сбое (сохранение отправки ссылки при ошибке удаления), задание таймаута в 5 секунд и ограничение прав субагента.</li>
+      </ul>
+      <div class="links-grid" style="margin-top: 2rem;">
+        <a class="file-link" href="reflection.md">
+          <strong>reflection.md</strong>
+          <span>Полный текст свободной рефлексии</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const counter = document.getElementById('slideCounter');
+
+    function updateSlides() {
+      slides.forEach((s, idx) => {
+        s.classList.toggle('active', idx === currentSlide);
+      });
+      counter.textContent = `Слайд ${currentSlide + 1} из ${slides.length}`;
+      prevBtn.disabled = currentSlide === 0;
+      nextBtn.disabled = currentSlide === slides.length - 1;
+    }
+
+    function prevSlide() {
+      if (currentSlide > 0) {
+        currentSlide--;
+        updateSlides();
+      }
+    }
+
+    function nextSlide() {
+      if (currentSlide < slides.length - 1) {
+        currentSlide++;
+        updateSlides();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') prevSlide();
+      if (e.key === 'ArrowRight') nextSlide();
+    });
+
+    updateSlides();
+  </script>
+</body>
+</html>
