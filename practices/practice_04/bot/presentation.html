@@ -224,13 +224,17 @@
       </ul>
       <pre><code>$ sh scripts/check.sh
 === 1. Checking formatting and static analysis (vet) ===
-=== 2. Running unit tests ===
+=== 2. Running Go unit tests (TDD features) ===
 PASS: TestValidateURL
 PASS: TestIsURL
 PASS: TestAddPage_StorageDependencyError
 PASS: TestAddPage_TimeoutError
 PASS: TestSendRandom_TimeoutError
-=== 3. Compiling binary ===
+=== 3. Running Skill verification tests ===
+Ran 6 tests in 0.118s ... OK
+=== 4. Running MCP server test suite ===
+Ran 17 tests in 0.074s ... OK
+=== 5. Compiling binary ===
 === All checks PASSED successfully! ===</code></pre>
     </div>
 
@@ -250,9 +254,9 @@ PASS: TestSendRandom_TimeoutError
           <strong>SKILL.md</strong>
           <span>Инструкция и шаги TDD</span>
         </a>
-        <a class="file-link" href="bot/.opencode/skills/test-driven-development/writing-good-tests.md">
-          <strong>writing-good-tests.md</strong>
-          <span>Best practices написания тестов</span>
+        <a class="file-link" href="bot/.opencode/skills/test_skill.py">
+          <strong>test_skill.py</strong>
+          <span>Тест структуры скилла и TDD-контракта (6 тестов)</span>
         </a>
       </div>
     </div>
@@ -367,9 +371,9 @@ PASS: TestSendRandom_TimeoutError
           <strong>test_verification.log</strong>
           <span>Полный сырой протокол JSON-RPC</span>
         </a>
-        <a class="file-link" href="bot/mcp-url-inspector/test_client.py">
-          <strong>test_client.py</strong>
-          <span>Тестовый клиент stdio</span>
+        <a class="file-link" href="bot/mcp-url-inspector/test_server.py">
+          <strong>test_server.py</strong>
+          <span>Модульные тесты сервера (17 тестов)</span>
         </a>
       </div>
     </div>

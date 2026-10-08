@@ -1,4 +1,7 @@
 {
   "name": "opencode-plugins",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@opencode-ai/plugin": "1.18.35"
+  }
 }
