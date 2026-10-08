@@ -1,5 +1,12 @@
-#!/bin/bash
+#!/bin/sh
 set -e
+
+# Автоматически переходим в корень проекта бота, независимо от места вызова
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+BOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$BOT_DIR"
+
+echo "Working directory: $BOT_DIR"
 
 echo "=== 1. Checking formatting and static analysis (vet) ==="
 go vet ./...
