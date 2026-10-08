@@ -53,9 +53,17 @@
 3. **Сборка агентов из Modelfile:**
    ```bash
    cd practices/practice_03/lab
-   ollama create itmo-agent -f Modelfile.agent
    ollama create itmo -f Modelfile
+   ollama create itmo-agent -f Modelfile.agent
    ```
+   - **`Modelfile` (для ассистента `itmo`):**
+     - Базовая модель: `qwen3.5:4b`
+     - Контекст: `num_ctx 4096`
+     - Параметры генерации: `temperature 0.2`, `top_p 0.9`, `repeat_penalty 1.1`, стоп-токены `<|im_start|>`, `<|im_end|>`
+     - Системный контракт: строгий запрет галлюцинаций («В предоставленных материалах нет ответа»), обязательное цитирование файлов и строк репозитория, детектирование вопросов с ложной предпосылкой.
+   - **`Modelfile.agent` (для агента `itmo-agent`):**
+     - Расширенный контекст: `num_ctx 65536` для инспекции больших фрагментов кодовой базы OpenCode.
+     - Системный контракт на автономный анализ структуры репозитория в режиме read-only.
 4. **Проверка эндпоинта и скачанных весов:**
    ```bash
    ollama list
