@@ -13,6 +13,8 @@
       --text: #f8fafc;
       --text-muted: #94a3b8;
       --success: #4ade80;
+      --warning: #facc15;
+      --danger: #f87171;
       --border: #334155;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,7 +30,7 @@
       padding: 2rem 1rem;
     }
     .container {
-      max-width: 960px;
+      max-width: 980px;
       width: 100%;
     }
     header {
@@ -132,6 +134,11 @@
       border: 1px solid var(--success);
       margin-bottom: 1rem;
     }
+    .badge-info {
+      background: rgba(56, 189, 248, 0.2);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
     .links-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -155,6 +162,13 @@
     }
     .file-link strong { color: var(--accent); margin-bottom: 0.3rem; }
     .file-link span { font-size: 0.85rem; color: var(--text-muted); }
+    .callout {
+      background: rgba(30, 41, 59, 0.7);
+      border-left: 4px solid var(--accent);
+      padding: 0.8rem 1.2rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1rem 0;
+    }
   </style>
 </head>
 <body>
@@ -166,7 +180,7 @@
 
     <div class="slide-controls">
       <button class="btn" id="prevBtn" onclick="prevSlide()">◀ Назад</button>
-      <span class="slide-counter" id="slideCounter">Слайд 1 из 7</span>
+      <span class="slide-counter" id="slideCounter">Слайд 1 из 8</span>
       <button class="btn" id="nextBtn" onclick="nextSlide()">Вперед ▶</button>
     </div>
 
@@ -182,15 +196,15 @@
         <li><strong>Фича B (Отказоустойчивость зависимостей):</strong> Обработка таймаутов (<code>context.WithTimeout</code> на 5с) и сбоев хранилища в <code>AddPage</code> и <code>SendRandom</code> с возвратом понятных сообщений пользователю при сохранении всех сценариев фичи A.</li>
       </ul>
       <div class="links-grid">
-        <a class="file-link" href="AGENTS.md">
+        <a class="file-link" href="bot/AGENTS.md">
           <strong>AGENTS.md</strong>
           <span>Операционный регламент для агента</span>
         </a>
-        <a class="file-link" href="docs/style-guide.md">
+        <a class="file-link" href="bot/docs/style-guide.md">
           <strong>docs/style-guide.md</strong>
           <span>Соглашения по стилю и тестам</span>
         </a>
-        <a class="file-link" href="scripts/check.sh">
+        <a class="file-link" href="bot/scripts/check.sh">
           <strong>scripts/check.sh</strong>
           <span>Единый доверенный раннер проверок</span>
         </a>
@@ -232,11 +246,11 @@ PASS: TestSendRandom_TimeoutError
         <li><strong>Phase Green:</strong> Реализована логика парсинга URL, лимита длины и проверки хостов в <code>commands.go</code>. Все тесты успешно прошли: <code>PASS</code>.</li>
       </ol>
       <div class="links-grid">
-        <a class="file-link" href=".opencode/skills/test-driven-development/SKILL.md">
+        <a class="file-link" href="bot/.opencode/skills/test-driven-development/SKILL.md">
           <strong>SKILL.md</strong>
           <span>Инструкция и шаги TDD</span>
         </a>
-        <a class="file-link" href=".opencode/skills/test-driven-development/writing-good-tests.md">
+        <a class="file-link" href="bot/.opencode/skills/test-driven-development/writing-good-tests.md">
           <strong>writing-good-tests.md</strong>
           <span>Best practices написания тестов</span>
         </a>
@@ -260,25 +274,71 @@ PASS: TestSendRandom_TimeoutError
    syntax error: unexpected semicolon
 === ТЕСТ HOOK УСПЕШНО ЗАВЕРШЕН ===</code></pre>
       <div class="links-grid">
-        <a class="file-link" href=".opencode/plugins/check-after-edit.js">
+        <a class="file-link" href="bot/.opencode/plugins/check-after-edit.js">
           <strong>check-after-edit.js</strong>
           <span>Код плагина-перехватчика</span>
         </a>
-        <a class="file-link" href=".opencode/plugins/hook_verification.log">
+        <a class="file-link" href="bot/.opencode/plugins/hook_verification.log">
           <strong>hook_verification.log</strong>
           <span>Лог проверки PASS и FAIL</span>
         </a>
       </div>
     </div>
 
-    <!-- Слайд 5: Собственный MCP -->
+    <!-- Слайд 5: Устройство собственного MCP -->
+    <div class="slide">
+      <span class="badge badge-info">Архитектура MCP</span>
+      <h2>5. Устройство собственного MCP: URL Inspector</h2>
+      <p>Для бота реализован сервер <code>mcp-url-inspector/server.py</code> на базе стандартного протокола <strong>Model Context Protocol (MCP)</strong> через <strong>JSON-RPC 2.0 поверх stdio</strong>. Сервер написан на чистом Python 3 без внешних библиотек (zero-dependency: <code>urllib</code>, <code>html.parser</code>, <code>json</code>, <code>sys</code>).</p>
+      
+      <div class="callout">
+        <strong>Как MCP взаимодействует со средой:</strong>
+        <ol>
+          <li><code>initialize</code> — клиент и сервер согласуют версию протокола и возможности (capabilities).</li>
+          <li><code>tools/list</code> — сервер экспортирует JSON-схему инструмента <code>inspect_url</code> с описанием и типами аргументов.</li>
+          <li><code>tools/call</code> — модель генерирует вызов функции, сервер выполняет сетевой запрос и возвращает структурированный ответ.</li>
+        </ol>
+      </div>
+
+      <h3>Регистрация в opencode.json:</h3>
+      <pre><code>{
+  "mcp": {
+    "servers": {
+      "url-inspector": {
+        "type": "local",
+        "command": "python3",
+        "args": ["mcp-url-inspector/server.py"],
+        "disabled": false
+      }
+    }
+  }
+}</code></pre>
+
+      <div class="links-grid">
+        <a class="file-link" href="bot/mcp-url-inspector/server.py">
+          <strong>server.py</strong>
+          <span>Код MCP-сервера</span>
+        </a>
+        <a class="file-link" href="bot/opencode.json">
+          <strong>opencode.json</strong>
+          <span>Конфиг подключения серверов</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Слайд 6: Вызовы MCP и Обработка Ошибок -->
     <div class="slide">
       <span class="badge">Критерий: 2 балла</span>
-      <h2>5. Собственный MCP: URL Inspector</h2>
-      <p>Разработан автономный MCP-сервер <code>mcp-url-inspector/server.py</code> на базе стандартного протокола JSON-RPC 2.0 (stdio) без внешних зависимостей. Инструмент <code>inspect_url</code> проверяет доступность ссылки, HTTP-статус и извлекает HTML-title.</p>
-      <h3>1. Успешный сценарий (Valid URL):</h3>
-      <pre><code>>> REQUEST: tools/call {"name": "inspect_url", "arguments": {"url": "https://example.com"}}
-<< RESPONSE:
+      <h2>6. MCP Tool: Успешный вызов и обработка ошибок</h2>
+      <p>Инструмент <code>inspect_url</code> никогда не падает с аварийным исключением. Он обрабатывает все типы некорректного входа и возвращает понятную структурированную ошибку (<code>isError: true</code>).</p>
+
+      <h3>1. Успешный сценарий (Valid URL ➔ 200 OK + Title):</h3>
+      <pre><code>>> CLIENT REQUEST (tools/call):
+{
+  "name": "inspect_url",
+  "arguments": { "url": "https://example.com" }
+}
+<< SERVER RESPONSE:
 {
   "status": "success",
   "reachable": true,
@@ -287,28 +347,37 @@ PASS: TestSendRandom_TimeoutError
   "title": "Example Domain",
   "final_url": "https://example.com"
 } (isError: false)</code></pre>
-      <h3>2. Обработка ошибок (Invalid Scheme & Forbidden Host):</h3>
-      <pre><code>>> REQUEST: tools/call {"name": "inspect_url", "arguments": {"url": "ftp://files.example.com"}}
-<< RESPONSE: {"status": "error", "error_type": "UNSUPPORTED_SCHEME"} (isError: true)
 
->> REQUEST: tools/call {"name": "inspect_url", "arguments": {"url": "http://127.0.0.1:8080"}}
-<< RESPONSE: {"status": "error", "error_type": "FORBIDDEN_HOST"} (isError: true)</code></pre>
+      <h3>2. Обработка ошибочного входа:</h3>
+      <ul>
+        <li><strong>Неподдерживаемая схема (ftp://):</strong> возвращает <code>error_type: "UNSUPPORTED_SCHEME"</code>.</li>
+        <li><strong>Запрещенный хост (127.0.0.1 / localhost):</strong> защита от SSRF возвращает <code>error_type: "FORBIDDEN_HOST"</code>.</li>
+        <li><strong>Несуществующий домен / таймаут:</strong> перехват DNS и таймаута без падения процесса сервера.</li>
+      </ul>
+      <pre><code>>> CLIENT REQUEST: {"name": "inspect_url", "arguments": {"url": "http://127.0.0.1:8080/admin"}}
+<< SERVER RESPONSE:
+{
+  "status": "error",
+  "error_type": "FORBIDDEN_HOST",
+  "message": "Host '127.0.0.1' is not allowed for security reasons"
+} (isError: true)</code></pre>
+
       <div class="links-grid">
-        <a class="file-link" href="mcp-url-inspector/server.py">
-          <strong>server.py</strong>
-          <span>Исходный код MCP-сервера</span>
-        </a>
-        <a class="file-link" href="mcp-url-inspector/test_verification.log">
+        <a class="file-link" href="bot/mcp-url-inspector/test_verification.log">
           <strong>test_verification.log</strong>
-          <span>Полный протокол JSON-RPC вызовов</span>
+          <span>Полный сырой протокол JSON-RPC</span>
+        </a>
+        <a class="file-link" href="bot/mcp-url-inspector/test_client.py">
+          <strong>test_client.py</strong>
+          <span>Тестовый клиент stdio</span>
         </a>
       </div>
     </div>
 
-    <!-- Слайд 6: Worktree & Subagent -->
+    <!-- Слайд 7: Worktree & Subagent -->
     <div class="slide">
       <span class="badge">Этапы 5 и 6</span>
-      <h2>6. Изоляция в Git Worktree и Subagent Review</h2>
+      <h2>7. Изоляция в Git Worktree и Subagent Review</h2>
       <ul>
         <li><strong>Worktree:</strong> Создана отдельная рабочая копия <code>../project-p4-b</code> на ветке <code>practice-04-b</code>. Это изолировало среду фичи B от стабильной ветки с фичей A.</li>
         <li><strong>Subagent Review:</strong> Запущен независимый субагент по профилю <code>.opencode/agents/tester.md</code>.
@@ -316,31 +385,43 @@ PASS: TestSendRandom_TimeoutError
         <li><strong>Слияние и Handoff:</strong> Ветка объединена через <code>git merge --ff-only practice-04-b</code>, состояние зафиксировано в <code>docs/HANDOFF.md</code>.</li>
       </ul>
       <div class="links-grid">
-        <a class="file-link" href=".opencode/agents/tester.md">
+        <a class="file-link" href="bot/.opencode/agents/tester.md">
           <strong>tester.md</strong>
           <span>Профиль субагента QA</span>
         </a>
-        <a class="file-link" href="docs/HANDOFF.md">
+        <a class="file-link" href="bot/docs/HANDOFF.md">
           <strong>docs/HANDOFF.md</strong>
           <span>Документ передачи контекста</span>
         </a>
       </div>
     </div>
 
-    <!-- Слайд 7: Рефлексия -->
+    <!-- Слайд 8: Рефлексия -->
     <div class="slide">
       <span class="badge">Критерий: 1 балл</span>
-      <h2>7. Рефлексия и выводы (reflection.md)</h2>
-      <h3>Ключевые инсайты:</h3>
+      <h2>8. Рефлексия по практике (reflection.md)</h2>
+      
+      <h3>1. Что помогло:</h3>
       <ul>
-        <li><strong>Что помогло:</strong> Строгие правила в <code>AGENTS.md</code> предотвратили изменение публичных интерфейсов и ослабление тестов. TDD дал ясную структуру работы.</li>
-        <li><strong>Что мешало:</strong> Жесткая привязка Telegram-клиента к HTTPS потребовала настройки <code>httptest.NewTLSServer</code> в тестах.</li>
-        <li><strong>Где вмешался человек:</strong> Проектирование поведения при частичном сбое (сохранение отправки ссылки при ошибке удаления), задание таймаута в 5 секунд и ограничение прав субагента.</li>
+        <li><strong>TDD-скилл:</strong> Пошаговая методология Red-Green-Refactor заставила четко сформулировать граничные условия до написания логики валидации.</li>
+        <li><strong>Собственный MCP <code>url-inspector</code>:</strong> Вынесение сетевой проверки веб-страниц в отдельный MCP-сервер позволило протестировать инструмент изолированно. Обработка запрещенных локальных адресов <code>localhost</code>, неверных схем, таймаутов показали устойчивость — сервер не крашится, а возвращает структурированную ошибку.</li>
+        <li><strong>Изоляция в Git Worktree и Subagent Review:</strong> Реализация фичи B в отдельном каталоге дала полную уверенность, что стабильная фича A не повреждена. Субагент подтвердил отсутствие регрессий и обратил внимание на общий бюджет таймаута для последовательных операций.</li>
       </ul>
-      <div class="links-grid" style="margin-top: 2rem;">
-        <a class="file-link" href="reflection.md">
+
+      <h3>2. Что мешало и вызвало сложности:</h3>
+      <ul>
+        <li><strong>CGO и SQLite:</strong> Драйвер <code>go-sqlite3</code> требует включенного CGO. При запуске тестов и сборки агенту было критично явно помнить про <code>CGO_ENABLED=1</code>, что было закреплено в <code>AGENTS.md</code>.</li>
+      </ul>
+
+      <h3>3. Где потребовалось вмешательство человека (Human-in-the-Loop):</h3>
+      <ul>
+        <li><strong>Проектирование поведения при сбое в <code>SendRandom</code>:</strong> В фиче B при выдаче ссылки выполняются два действия: отправка сообщения в Telegram и удаление ссылки из базы. Возник вопрос: что делать, если сообщение успешно ушло пользователю, но база вернула ошибку при удалении? Было принято решение: не возвращать ошибку выше, а записать предупреждение в лог.</li>
+      </ul>
+
+      <div class="links-grid" style="margin-top: 1.5rem;">
+        <a class="file-link" href="bot/reflection.md">
           <strong>reflection.md</strong>
-          <span>Полный текст свободной рефлексии</span>
+          <span>Файл рефлексии в репозитории</span>
         </a>
       </div>
     </div>
