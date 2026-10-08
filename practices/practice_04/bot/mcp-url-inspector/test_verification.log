@@ -1,0 +1,146 @@
+=== STARTING MCP JSON-RPC PROTOCOL TEST ===
+
+>> CLIENT REQUEST (method: initialize):
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {
+    "capabilities": {}
+  }
+}
+<< SERVER RESPONSE (id: 1):
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "protocolVersion": "2024-11-05",
+    "capabilities": {
+      "tools": {}
+    },
+    "serverInfo": {
+      "name": "url-inspector-mcp",
+      "version": "1.0.0"
+    }
+  }
+}
+--------------------------------------------------
+>> CLIENT REQUEST (method: tools/list):
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/list",
+  "params": {}
+}
+<< SERVER RESPONSE (id: 2):
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "result": {
+    "tools": [
+      {
+        "name": "inspect_url",
+        "description": "Проверяет валидность и доступность веб-ссылки, возвращает HTTP статус и title страницы",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "URL-адрес для проверки (http или https)"
+            },
+            "timeout": {
+              "type": "integer",
+              "description": "Таймаут запроса в секундах (по умолчанию 5)"
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      }
+    ]
+  }
+}
+--------------------------------------------------
+>> CLIENT REQUEST (method: tools/call):
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "inspect_url",
+    "arguments": {
+      "url": "https://example.com"
+    }
+  }
+}
+<< SERVER RESPONSE (id: 3):
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"status\": \"success\",\n  \"reachable\": true,\n  \"status_code\": 200,\n  \"content_type\": \"text/html\",\n  \"title\": \"Example Domain\",\n  \"original_url\": \"https://example.com\",\n  \"final_url\": \"https://example.com\"\n}"
+      }
+    ],
+    "isError": false
+  }
+}
+--------------------------------------------------
+>> CLIENT REQUEST (method: tools/call):
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "method": "tools/call",
+  "params": {
+    "name": "inspect_url",
+    "arguments": {
+      "url": "ftp://files.example.com"
+    }
+  }
+}
+<< SERVER RESPONSE (id: 4):
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"status\": \"error\",\n  \"error_type\": \"UNSUPPORTED_SCHEME\",\n  \"message\": \"Invalid scheme 'ftp'. Only 'http' and 'https' are allowed.\"\n}"
+      }
+    ],
+    "isError": true
+  }
+}
+--------------------------------------------------
+>> CLIENT REQUEST (method: tools/call):
+{
+  "jsonrpc": "2.0",
+  "id": 5,
+  "method": "tools/call",
+  "params": {
+    "name": "inspect_url",
+    "arguments": {
+      "url": "http://127.0.0.1:8080/admin"
+    }
+  }
+}
+<< SERVER RESPONSE (id: 5):
+{
+  "jsonrpc": "2.0",
+  "id": 5,
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"status\": \"error\",\n  \"error_type\": \"FORBIDDEN_HOST\",\n  \"message\": \"Host '127.0.0.1' is not allowed for security reasons\"\n}"
+      }
+    ],
+    "isError": true
+  }
+}
+--------------------------------------------------
+=== MCP TEST FINISHED SUCCESSFULLY ===
