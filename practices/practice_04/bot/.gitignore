@@ -1,0 +1,9 @@
+/user_data
+/data
+
+bot_app
+link_bot_app
+
+.env
+__pycache__/
+*.pyc

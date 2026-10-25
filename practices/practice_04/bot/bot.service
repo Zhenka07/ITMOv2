@@ -1,0 +1,19 @@
+[Unit]
+Description=Telegram Read Adviser Bot
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/telegram-bot
+ExecStart=/opt/telegram-bot/bot_app
+Restart=always
+RestartSec=5
+EnvironmentFile=/opt/telegram-bot/.env
+
+# Log directly to systemd journal
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

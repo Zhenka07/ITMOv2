@@ -1,0 +1,8 @@
+.git
+.gitignore
+.env
+user_data/
+data/
+bot_app
+demo.png
+*.md
