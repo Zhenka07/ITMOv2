@@ -1,0 +1,276 @@
+openapi: 3.1.0
+info:
+  title: DataHub SDD Service API
+  version: 1.0.0
+  description: Unified Contract between UI Frontend Team and Logic Backend Team reconciled via Spec-Kit framework.
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /api/v1/health:
+    get:
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: Service health status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: "healthy" }
+                  service: { type: string, example: "DataHub-SDD" }
+                  version: { type: string, example: "1.0.0" }
+
+  /api/v1/items:
+    get:
+      summary: List, filter, and search items
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+            enum: [engineering, devops, security, product, analytics]
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, pending, archived]
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: tag
+          in: query
+          schema:
+            type: string
+        - name: sort_by
+          in: query
+          schema:
+            type: string
+            enum: [created_at, updated_at, title, priority]
+            default: created_at
+        - name: sort_order
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Paginated item list
+          headers:
+            X-Total-Count:
+              schema: { type: integer }
+            X-Offset:
+              schema: { type: integer }
+            X-Limit:
+              schema: { type: integer }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemListResponse'
+        '400':
+          $ref: '#/components/responses/ProblemResponse'
+
+    post:
+      summary: Create new item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemCreateRequest'
+      responses:
+        '201':
+          description: Created item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '400':
+          $ref: '#/components/responses/ProblemResponse'
+
+  /api/v1/items/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      summary: Get single item by ID
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '404':
+          $ref: '#/components/responses/ProblemResponse'
+    patch:
+      summary: Update item fields
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemUpdateRequest'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '400':
+          $ref: '#/components/responses/ProblemResponse'
+        '404':
+          $ref: '#/components/responses/ProblemResponse'
+    delete:
+      summary: Delete item
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  message: { type: string }
+        '404':
+          $ref: '#/components/responses/ProblemResponse'
+
+  /api/v1/items/export:
+    post:
+      summary: Export items in JSON or CSV format
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportRequest'
+      responses:
+        '200':
+          description: Exported file stream
+          headers:
+            Content-Disposition:
+              schema: { type: string }
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+            text/csv:
+              schema:
+                type: string
+        '400':
+          $ref: '#/components/responses/ProblemResponse'
+
+components:
+  responses:
+    ProblemResponse:
+      description: RFC 7807 Problem Details
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+
+  schemas:
+    Item:
+      type: object
+      required: [id, title, category, status, priority, created_at, updated_at]
+      properties:
+        id: { type: string, example: "itm-001" }
+        title: { type: string, minLength: 3, maxLength: 120 }
+        category: { type: string, enum: [engineering, devops, security, product, analytics] }
+        status: { type: string, enum: [active, pending, archived] }
+        priority: { type: integer, minimum: 1, maximum: 5 }
+        description: { type: string }
+        tags:
+          type: array
+          items: { type: string }
+        created_at: { type: string, format: date-time }
+        updated_at: { type: string, format: date-time }
+
+    ItemListResponse:
+      type: object
+      required: [items, total, offset, limit]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        total: { type: integer }
+        offset: { type: integer }
+        limit: { type: integer }
+
+    ItemCreateRequest:
+      type: object
+      required: [title, category]
+      properties:
+        title: { type: string, minLength: 3, maxLength: 120 }
+        category: { type: string, enum: [engineering, devops, security, product, analytics] }
+        status: { type: string, enum: [active, pending, archived], default: "active" }
+        priority: { type: integer, minimum: 1, maximum: 5, default: 1 }
+        tags:
+          type: array
+          items: { type: string }
+        description: { type: string }
+
+    ItemUpdateRequest:
+      type: object
+      properties:
+        title: { type: string, minLength: 3, maxLength: 120 }
+        category: { type: string, enum: [engineering, devops, security, product, analytics] }
+        status: { type: string, enum: [active, pending, archived] }
+        priority: { type: integer, minimum: 1, maximum: 5 }
+        tags:
+          type: array
+          items: { type: string }
+        description: { type: string }
+
+    ExportRequest:
+      type: object
+      required: [format]
+      properties:
+        format: { type: string, enum: [json, csv] }
+        category: { type: string, nullable: true }
+        status: { type: string, nullable: true }
+        search: { type: string, nullable: true }
+        tag: { type: string, nullable: true }
+
+    ProblemDetails:
+      type: object
+      required: [type, title, status, detail]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string }
+        invalid_params:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvalidParam'
+
+    InvalidParam:
+      type: object
+      required: [name, reason]
+      properties:
+        name: { type: string }
+        reason: { type: string }
