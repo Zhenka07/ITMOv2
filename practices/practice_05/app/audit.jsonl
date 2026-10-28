@@ -1,1 +1,28 @@
 {"id": "aud-0001", "timestamp": "2026-10-28T15:56:23.696717+00:00", "action": "item.created", "actor": "127.0.0.1", "resource_id": "itm-b151bb", "details": {}}
+{"id": "aud-0001", "timestamp": "2026-10-28T15:59:28.888898+00:00", "action": "data.exported", "actor": "mcp-client", "resource_id": null, "details": {"format": "csv"}}
+{"id": "aud-0001", "timestamp": "2026-10-28T15:59:43.951771+00:00", "action": "data.exported", "actor": "mcp-client", "resource_id": null, "details": {"format": "json"}}
+{"id": "aud-0001", "timestamp": "2026-10-28T16:00:05.914509+00:00", "action": "item.created", "actor": "127.0.0.1", "resource_id": "itm-ce2285", "details": {"title": "Audit Verification Task", "category": "security"}}
+{"id": "aud-0002", "timestamp": "2026-10-28T16:00:05.918400+00:00", "action": "data.exported", "actor": "127.0.0.1", "resource_id": null, "details": {"format": "csv", "category": null, "status": null}}
+{"id": "aud-0003", "timestamp": "2026-10-28T16:00:05.921094+00:00", "action": "data.exported", "actor": "127.0.0.1", "resource_id": null, "details": {"format": "json", "category": "engineering", "status": null}}
+{"id": "aud-0001", "timestamp": "2026-10-28T16:00:51.068486+00:00", "action": "item.created", "actor": "127.0.0.1", "resource_id": "itm-becb20", "details": {"title": "Verify Spec-Kit Contract Alignment", "category": "product"}}
+{"id": "aud-0002", "timestamp": "2026-10-28T16:00:51.070410+00:00", "action": "item.updated", "actor": "127.0.0.1", "resource_id": "itm-becb20", "details": {"updated_fields": ["status"]}}
+{"id": "aud-0003", "timestamp": "2026-10-28T16:00:51.071941+00:00", "action": "data.exported", "actor": "127.0.0.1", "resource_id": null, "details": {"format": "json", "category": "product", "status": null}}
+{"id": "aud-0004", "timestamp": "2026-10-28T16:00:51.073275+00:00", "action": "data.exported", "actor": "127.0.0.1", "resource_id": null, "details": {"format": "csv", "category": "product", "status": null}}
+{"id": "aud-0005", "timestamp": "2026-10-28T16:00:51.075140+00:00", "action": "item.deleted", "actor": "127.0.0.1", "resource_id": "itm-becb20", "details": {}}
+{"id": "aud-0001", "timestamp": "2026-10-28T16:00:56.707350+00:00", "action": "item.created", "actor": "127.0.0.1", "resource_id": "itm-05a1f0", "details": {"title": "Audit Verification Task", "category": "security"}}
+{"id": "aud-0002", "timestamp": "2026-10-28T16:00:56.711591+00:00", "action": "data.exported", "actor": "127.0.0.1", "resource_id": null, "details": {"format": "csv", "category": null, "status": null}}
+{"id": "aud-0003", "timestamp": "2026-10-28T16:00:56.714305+00:00", "action": "data.exported", "actor": "127.0.0.1", "resource_id": null, "details": {"format": "json", "category": "engineering", "status": null}}
+{"id": "aud-0004", "timestamp": "2026-10-28T16:00:57.302545+00:00", "action": "item.created", "actor": "127.0.0.1", "resource_id": "itm-62bb54", "details": {"title": "Verify Spec-Kit Contract Alignment", "category": "product"}}
+{"id": "aud-0005", "timestamp": "2026-10-28T16:00:57.304475+00:00", "action": "item.updated", "actor": "127.0.0.1", "resource_id": "itm-62bb54", "details": {"updated_fields": ["status"]}}
+{"id": "aud-0006", "timestamp": "2026-10-28T16:00:57.306017+00:00", "action": "data.exported", "actor": "127.0.0.1", "resource_id": null, "details": {"format": "json", "category": "product", "status": null}}
+{"id": "aud-0007", "timestamp": "2026-10-28T16:00:57.307129+00:00", "action": "data.exported", "actor": "127.0.0.1", "resource_id": null, "details": {"format": "csv", "category": "product", "status": null}}
+{"id": "aud-0008", "timestamp": "2026-10-28T16:00:57.308623+00:00", "action": "item.deleted", "actor": "127.0.0.1", "resource_id": "itm-62bb54", "details": {}}
+{"id": "aud-0001", "timestamp": "2026-10-28T16:01:13.164176+00:00", "action": "item.created", "actor": "127.0.0.1", "resource_id": "itm-2191b8", "details": {"title": "Audit Verification Task", "category": "security"}}
+{"id": "aud-0002", "timestamp": "2026-10-28T16:01:13.168736+00:00", "action": "data.exported", "actor": "127.0.0.1", "resource_id": null, "details": {"format": "csv", "category": null, "status": null}}
+{"id": "aud-0003", "timestamp": "2026-10-28T16:01:13.171594+00:00", "action": "data.exported", "actor": "127.0.0.1", "resource_id": null, "details": {"format": "json", "category": "engineering", "status": null}}
+{"id": "aud-0004", "timestamp": "2026-10-28T16:01:13.765440+00:00", "action": "item.created", "actor": "127.0.0.1", "resource_id": "itm-8ab30d", "details": {"title": "Verify Spec-Kit Contract Alignment", "category": "product"}}
+{"id": "aud-0005", "timestamp": "2026-10-28T16:01:13.767694+00:00", "action": "item.updated", "actor": "127.0.0.1", "resource_id": "itm-8ab30d", "details": {"updated_fields": ["status"]}}
+{"id": "aud-0006", "timestamp": "2026-10-28T16:01:13.769299+00:00", "action": "data.exported", "actor": "127.0.0.1", "resource_id": null, "details": {"format": "json", "category": "product", "status": null}}
+{"id": "aud-0007", "timestamp": "2026-10-28T16:01:13.770923+00:00", "action": "data.exported", "actor": "127.0.0.1", "resource_id": null, "details": {"format": "csv", "category": "product", "status": null}}
+{"id": "aud-0008", "timestamp": "2026-10-28T16:01:13.773084+00:00", "action": "item.deleted", "actor": "127.0.0.1", "resource_id": "itm-8ab30d", "details": {}}
+{"id": "aud-0001", "timestamp": "2026-10-28T16:01:14.464926+00:00", "action": "data.exported", "actor": "mcp-client", "resource_id": null, "details": {"format": "json"}}
