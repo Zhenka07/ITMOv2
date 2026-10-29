@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataHub SDD Console · Practice 05</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-hover: #334155;
+      --border: #475569;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --accent: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --radius: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .brand h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #60a5fa;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-sdd {
+      font-size: 0.75rem;
+      background: rgba(59, 130, 246, 0.2);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    button {
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.875rem;
+      border-radius: var(--radius);
+      padding: 8px 16px;
+      border: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--surface-hover); }
+    .btn-danger { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.4); }
+    .btn-danger:hover { background: rgba(239, 68, 68, 0.4); }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+    .stat-value { font-size: 1.75rem; font-weight: 700; margin-top: 4px; }
+
+    /* Filter Bar */
+    .filter-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      flex: 1;
+    }
+
+    input[type="text"], select {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      outline: none;
+    }
+
+    input[type="text"]:focus, select:focus {
+      border-color: var(--primary);
+    }
+
+    .search-input { min-width: 240px; flex: 1; }
+
+    /* Status Pills */
+    .status-tabs {
+      display: flex;
+      background: #0f172a;
+      border-radius: var(--radius);
+      padding: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .status-tab {
+      padding: 4px 12px;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .status-tab.active {
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Table */
+    .table-container {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(15, 23, 42, 0.6);
+      padding: 12px 16px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(71, 85, 105, 0.4);
+      font-size: 0.875rem;
+    }
+
+    tr:hover td {
+      background: rgba(51, 65, 85, 0.4);
+    }
+
+    .tag-chip {
+      display: inline-block;
+      font-size: 0.75rem;
+      background: rgba(148, 163, 184, 0.15);
+      color: #cbd5e1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-right: 4px;
+    }
+
+    .badge-status {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: capitalize;
+    }
+    .badge-active { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .badge-pending { background: rgba(245, 158, 11, 0.2); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.4); }
+    .badge-archived { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.4); }
+
+    /* Empty and Error states */
+    .empty-state, .error-state, .loading-state {
+      padding: 48px 24px;
+      text-align: center;
+    }
+
+    .error-banner {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid var(--danger);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      color: #fca5a5;
+      display: none;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 500px;
+      padding: 24px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+    }
+
+    .field-error {
+      color: #f87171;
+      font-size: 0.75rem;
+      margin-top: 4px;
+      display: none;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <h1>DataHub Inspector <span class="badge-sdd">SDD Reconciled</span></h1>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">
+          Unified Contract between UI & Logic Teams · Practice 5 Brownfield
+        </p>
+      </div>
+      <div class="header-actions">
+        <button class="btn-secondary" onclick="exportData('json')">📥 Экспорт JSON</button>
+        <button class="btn-secondary" onclick="exportData('csv')">📊 Экспорт CSV</button>
+        <button class="btn-primary" onclick="openNewModal()">➕ Новая запись</button>
+      </div>
+    </header>
+
+    <div id="errorBanner" class="error-banner"></div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Всего записей</div>
+        <div class="stat-value" id="statTotal">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Активных</div>
+        <div class="stat-value" style="color: #6ee7b7;" id="statActive">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">На ревью / Pending</div>
+        <div class="stat-value" style="color: #fcd34d;" id="statPending">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">В архиве</div>
+        <div class="stat-value" style="color: #cbd5e1;" id="statArchived">-</div>
+      </div>
+    </div>
+
+    <div class="filter-panel">
+      <div class="filter-group">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск по названию, тегу, описанию..." oninput="handleSearch()">
+        
+        <select id="categorySelect" onchange="fetchItems()">
+          <option value="">Все категории</option>
+          <option value="engineering">Engineering</option>
+          <option value="devops">DevOps</option>
+          <option value="security">Security</option>
+          <option value="product">Product</option>
+          <option value="analytics">Analytics</option>
+        </select>
+
+        <select id="sortSelect" onchange="fetchItems()">
+          <option value="created_at:desc">Сначала новые</option>
+          <option value="created_at:asc">Сначала старые</option>
+          <option value="priority:desc">По приоритету (1-5)</option>
+          <option value="title:asc">По названию (А-Я)</option>
+        </select>
+      </div>
+
+      <div class="status-tabs">
+        <div class="status-tab active" data-status="" onclick="setStatusFilter('', this)">Все</div>
+        <div class="status-tab" data-status="active" onclick="setStatusFilter('active', this)">Active</div>
+        <div class="status-tab" data-status="pending" onclick="setStatusFilter('pending', this)">Pending</div>
+        <div class="status-tab" data-status="archived" onclick="setStatusFilter('archived', this)">Archived</div>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Категория</th>
+            <th>Статус</th>
+            <th>Приоритет</th>
+            <th>Теги</th>
+            <th>Создано</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody id="itemsTableBody">
+          <tr><td colspan="8" class="loading-state">Загрузка данных...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Create Item Modal -->
+  <div class="modal-overlay" id="itemModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Создать запись</h3>
+        <button class="btn-secondary" style="padding: 4px 8px;" onclick="closeModal()">✕</button>
+      </div>
+      <form id="itemForm" onsubmit="handleFormSubmit(event)">
+        <div class="form-group">
+          <label>Заголовок *</label>
+          <input type="text" id="fTitle" required minlength="3" maxlength="120" placeholder="Напр. Настройка CI runners">
+          <div class="field-error" id="errTitle"></div>
+        </div>
+        <div class="form-group">
+          <label>Категория *</label>
+          <select id="fCategory" required>
+            <option value="engineering">Engineering</option>
+            <option value="devops">DevOps</option>
+            <option value="security">Security</option>
+            <option value="product">Product</option>
+            <option value="analytics">Analytics</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Статус</label>
+          <select id="fStatus">
+            <option value="active">Active</option>
+            <option value="pending">Pending</option>
+            <option value="archived">Archived</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Приоритет (1 - низкий, 5 - критический)</label>
+          <select id="fPriority">
+            <option value="1">1 (Низкий)</option>
+            <option value="2">2 (Обычный)</option>
+            <option value="3">3 (Средний)</option>
+            <option value="4">4 (Высокий)</option>
+            <option value="5">5 (Критический)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Теги (через запятую)</label>
+          <input type="text" id="fTags" placeholder="openspec, automation, docker">
+          <div class="field-error" id="errTags"></div>
+        </div>
+        <div class="form-group">
+          <label>Описание</label>
+          <textarea id="fDesc" rows="3" style="background:#0f172a; border:1px solid var(--border); color:white; padding:8px; border-radius:6px; font-family:inherit;"></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" onclick="closeModal()">Отмена</button>
+          <button type="submit" class="btn-primary" id="btnSubmit">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let currentStatus = '';
+    let searchTimeout = null;
+
+    async function fetchItems() {
+      const search = document.getElementById('searchInput').value.trim();
+      const category = document.getElementById('categorySelect').value;
+      const sortVal = document.getElementById('sortSelect').value.split(':');
+      const sortBy = sortVal[0];
+      const sortOrder = sortVal[1];
+
+      const params = new URLSearchParams();
+      if (search) params.append('search', search);
+      if (category) params.append('category', category);
+      if (currentStatus) params.append('status', currentStatus);
+      params.append('sort_by', sortBy);
+      params.append('sort_order', sortOrder);
+
+      const tbody = document.getElementById('itemsTableBody');
+      const errorBanner = document.getElementById('errorBanner');
+      errorBanner.style.display = 'none';
+
+      try {
+        const res = await fetch(`/api/v1/items?${params.toString()}`);
+        if (!res.ok) {
+          const problem = await res.json();
+          showError(`Ошибка [${problem.title || res.status}]: ${problem.detail || 'Не удалось получить список'}`);
+          return;
+        }
+
+        const data = await res.json();
+        renderTable(data.items);
+        updateStats();
+      } catch (err) {
+        showError(`Сетевая ошибка: ${err.message}`);
+      }
+    }
+
+    function renderTable(items) {
+      const tbody = document.getElementById('itemsTableBody');
+      if (!items || items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="empty-state">Записей не найдено по заданным фильтрам.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = items.map(it => `
+        <tr>
+          <td><code style="color:#93c5fd;">${escapeHtml(it.id)}</code></td>
+          <td>
+            <strong>${escapeHtml(it.title)}</strong>
+            ${it.description ? `<div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">${escapeHtml(it.description)}</div>` : ''}
+          </td>
+          <td><span class="tag-chip" style="background:#1e3a8a; color:#bfdbfe;">${escapeHtml(it.category)}</span></td>
+          <td><span class="badge-status badge-${it.status}">${escapeHtml(it.status)}</span></td>
+          <td><span style="font-weight:700; color:${getPriorityColor(it.priority)}">${it.priority} / 5</span></td>
+          <td>${(it.tags || []).map(t => `<span class="tag-chip">#${escapeHtml(t)}</span>`).join('')}</td>
+          <td style="font-size:0.75rem; color:var(--text-muted);">${formatDate(it.created_at)}</td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button class="btn-secondary" style="padding:2px 8px; font-size:0.75rem;" onclick="toggleStatus('${it.id}', '${it.status}')" title="Сменить статус">Статус</button>
+              <button class="btn-danger" style="padding:2px 8px; font-size:0.75rem;" onclick="deleteItem('${it.id}')" title="Удалить">✕</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function updateStats() {
+      try {
+        const res = await fetch('/api/v1/items?limit=100');
+        if (!res.ok) return;
+        const data = await res.json();
+        const all = data.items || [];
+        document.getElementById('statTotal').innerText = data.total;
+        document.getElementById('statActive').innerText = all.filter(i => i.status === 'active').length;
+        document.getElementById('statPending').innerText = all.filter(i => i.status === 'pending').length;
+        document.getElementById('statArchived').innerText = all.filter(i => i.status === 'archived').length;
+      } catch (e) {}
+    }
+
+    function setStatusFilter(status, el) {
+      currentStatus = status;
+      document.querySelectorAll('.status-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      fetchItems();
+    }
+
+    function handleSearch() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(fetchItems, 250);
+    }
+
+    async function toggleStatus(id, current) {
+      const next = current === 'active' ? 'pending' : (current === 'pending' ? 'archived' : 'active');
+      try {
+        const res = await fetch(`/api/v1/items/${id}`, {
+          method: 'PATCH',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({status: next})
+        });
+        if (res.ok) fetchItems();
+        else {
+          const prob = await res.json();
+          showError(prob.detail || 'Не удалось обновить статус');
+        }
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    async function deleteItem(id) {
+      if (!confirm(`Удалить запись ${id}?`)) return;
+      try {
+        const res = await fetch(`/api/v1/items/${id}`, { method: 'DELETE' });
+        if (res.ok) fetchItems();
+        else {
+          const prob = await res.json();
+          showError(prob.detail || 'Не удалось удалить запись');
+        }
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    function openNewModal() {
+      document.getElementById('itemForm').reset();
+      document.getElementById('errTitle').style.display = 'none';
+      document.getElementById('errTags').style.display = 'none';
+      document.getElementById('itemModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('itemModal').style.display = 'none';
+    }
+
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      const title = document.getElementById('fTitle').value.trim();
+      const category = document.getElementById('fCategory').value;
+      const status = document.getElementById('fStatus').value;
+      const priority = parseInt(document.getElementById('fPriority').value, 10);
+      const rawTags = document.getElementById('fTags').value.trim();
+      const description = document.getElementById('fDesc').value.trim();
+
+      const tags = rawTags ? rawTags.split(',').map(t => t.trim().toLowerCase()).filter(Boolean) : [];
+
+      const payload = { title, category, status, priority, tags, description };
+
+      try {
+        const res = await fetch('/api/v1/items', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          closeModal();
+          fetchItems();
+        } else {
+          const prob = await res.json();
+          if (prob.invalid_params && prob.invalid_params.length) {
+            prob.invalid_params.forEach(p => {
+              if (p.name === 'title') {
+                const el = document.getElementById('errTitle');
+                el.innerText = p.reason;
+                el.style.display = 'block';
+              }
+              if (p.name === 'tags') {
+                const el = document.getElementById('errTags');
+                el.innerText = p.reason;
+                el.style.display = 'block';
+              }
+            });
+          } else {
+            showError(prob.detail || prob.title || 'Ошибка валидации');
+          }
+        }
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    async function exportData(fmt) {
+      const search = document.getElementById('searchInput').value.trim();
+      const category = document.getElementById('categorySelect').value;
+
+      try {
+        const res = await fetch('/api/v1/items/export', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            format: fmt,
+            category: category || null,
+            status: currentStatus || null,
+            search: search || null
+          })
+        });
+
+        if (!res.ok) {
+          showError('Экспорт завершился ошибкой.');
+          return;
+        }
+
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `datahub_export.${fmt}`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+
+    function showError(msg) {
+      const banner = document.getElementById('errorBanner');
+      banner.innerText = msg;
+      banner.style.display = 'block';
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function getPriorityColor(p) {
+      if (p >= 5) return '#ef4444';
+      if (p >= 4) return '#f97316';
+      if (p >= 3) return '#eab308';
+      return '#94a3b8';
+    }
+
+    function formatDate(iso) {
+      try {
+        const d = new Date(iso);
+        return d.toLocaleDateString('ru-RU') + ' ' + d.toLocaleTimeString('ru-RU', {hour: '2-digit', minute:'2-digit'});
+      } catch (e) {
+        return iso;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchItems);
+  </script>
+</body>
+</html>
