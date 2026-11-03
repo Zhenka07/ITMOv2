@@ -1,0 +1,62 @@
+{
+  "itm-001": {
+    "id": "itm-001",
+    "title": "Configure OpenSpec Root Profile",
+    "category": "engineering",
+    "status": "active",
+    "description": "Initialize OpenSpec CLI profile core with schema spec-driven.",
+    "tags": ["openspec", "sdd", "setup"],
+    "priority": 4,
+    "metadata": {},
+    "created_at": "2026-10-20T10:00:00Z",
+    "updated_at": "2026-10-20T10:00:00Z"
+  },
+  "itm-002": {
+    "id": "itm-002",
+    "title": "Migrate CI Runner to Ubuntu 24.04",
+    "category": "devops",
+    "status": "active",
+    "description": "Update GitHub Actions runners to use latest LTS images and Node 20+.",
+    "tags": ["ci-cd", "infra", "docker"],
+    "priority": 3,
+    "metadata": {},
+    "created_at": "2026-10-21T12:30:00Z",
+    "updated_at": "2026-10-21T12:30:00Z"
+  },
+  "itm-003": {
+    "id": "itm-003",
+    "title": "Audit Prompt Injection Safeguards",
+    "category": "security",
+    "status": "pending",
+    "description": "Perform threat modeling on LLM evaluator prompts and judge system prompt.",
+    "tags": ["security", "red-team", "ai"],
+    "priority": 5,
+    "metadata": {},
+    "created_at": "2026-10-22T08:15:00Z",
+    "updated_at": "2026-10-22T08:15:00Z"
+  },
+  "itm-004": {
+    "id": "itm-004",
+    "title": "Two-Team Contract Reconciliation",
+    "category": "product",
+    "status": "active",
+    "description": "Reconcile UI and Logic specifications into unified OpenAPI 3.1 contract.",
+    "tags": ["contract", "spec-kit", "alignment"],
+    "priority": 4,
+    "metadata": {},
+    "created_at": "2026-10-23T14:45:00Z",
+    "updated_at": "2026-10-23T14:45:00Z"
+  },
+  "itm-005": {
+    "id": "itm-005",
+    "title": "Legacy Benchmark Telemetry Collector",
+    "category": "analytics",
+    "status": "archived",
+    "description": "Deprecated batch telemetry script replaced by real-time event inspector.",
+    "tags": ["deprecated", "metrics", "legacy"],
+    "priority": 1,
+    "metadata": {},
+    "created_at": "2026-10-15T09:00:00Z",
+    "updated_at": "2026-10-18T18:00:00Z"
+  }
+}

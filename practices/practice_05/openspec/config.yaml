@@ -1,0 +1,21 @@
+schema: spec-driven
+
+# Project context
+context: |
+  DataHub SDD brownfield service with REST API, RFC 7807 problem details, and real-time Web UI console.
+
+# Per-artifact custom rules
+rules:
+  design:
+    - "Обязательно объясни архитектурное взаимодействие компонентов и поток данных диаграммой Mermaid (flowchart или sequenceDiagram)."
+  specs:
+    - "Формулируй все приёмочные сценарии строго в нотации Given/When/Then с четырьмя решетками (####)."
+
+# Per-operation guidance
+operations:
+  apply:
+    guidance:
+      - "Все изменения должны сопровождаться автоматическими тестами сценариев (успех, ошибка, граница)."
+  archive:
+    guidance:
+      - "Перед архивацией проверять целостность через openspec validate --strict."
